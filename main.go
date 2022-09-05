@@ -1,6 +1,9 @@
 package main
 
 import (
+	"encoding/csv"
+	"encoding/json"
+	"fmt"
 	"log"
 	"os"
 
@@ -8,46 +11,72 @@ import (
 )
 
 type todos struct {
-	id   int64
-	name string
-	done bool
+	Id   int64  `json:"id"`
+	Name string `json:"name"`
+	Done bool   `json:"done"`
 }
 
 var (
+	jsonListe = []todos{}
 	todoListe = []todos{}
 )
 
-func loadFromCSV() {
+func loadFromCSV(source, destination string) error {
 	// open file
-	f, err := os.Open("data.csv")
+	jsonFile, err := os.Open("data.json")
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// remember to close the file at the end of the program
-	defer f.Close()
+	defer jsonFile.Close()
+
+	// var jsonListe []todos
+	if err := json.NewDecoder(jsonFile).Decode(&jsonListe); err != nil {
+		return err
+	}
+
+	outputFile, err := os.Create("data.csv")
+	if err != nil {
+		return err
+	}
+
+	defer outputFile.Close()
+
+	writer := csv.NewWriter(outputFile)
+	writer.Flush()
+
+	header := []string{"id", "name", "done"}
+	if err := writer.Write(header); err != nil {
+		return err
+	}
+
+	for _, r := range jsonListe {
+		var csvRow []string
+		csvRow = append(csvRow, fmt.Sprint(r.Id, r.Done), r.Name)
+		if err := writer.Write(csvRow); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func getTodo(c *fiber.Ctx) error {
-	loadFromCSV()
+	if err := loadFromCSV("data.json", "data.csv"); err != nil {
+		log.Fatal(err)
+	}
 
-	return c.JSON(todoListe)
+	return c.JSON(jsonListe)
 }
 
 func main() {
 	app := fiber.New()
 
-	// für die Statische Dateien wie CSS, Images und JavaScript
-	app.Static("/", "./")
+	app.Get("/todos", getTodo)
 
-	// gibt Hello World zurück
-	app.Get("/todos", func(c *fiber.Ctx) error {
-		return c.SendFile("./indexTest.html")
+	app.Post("/todos", func(c *fiber.Ctx) error {
+		return c.JSON(todoListe)
 	})
-
-	/*app.Post("/todos", func(c *fiber.Ctx) error {
-		return c.JSON("/list.json")
-	})*/
 
 	app.Listen(":5000")
 }
