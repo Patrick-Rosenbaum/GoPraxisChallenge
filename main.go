@@ -20,15 +20,15 @@ func getList(c *fiber.Ctx) error {
 }
 
 func addTodo(c *fiber.Ctx) error {
-	return c.JSON(todoListe)
+	return c.SendFile("data.json")
 }
 
 func updateList(c *fiber.Ctx) error {
-	return c.JSON(todoListe)
+	return c.SendFile("data.json")
 }
 
 func deleteTodo(c *fiber.Ctx) error {
-	return c.JSON(todoListe)
+	return c.SendFile("data.json")
 }
 
 func main() {
