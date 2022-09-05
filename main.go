@@ -16,7 +16,7 @@ func getList(c *fiber.Ctx) error {
 	//loadCSV()
 
 	//todoList := strconv.Atoi(todoListe)
-	return c.JSON("data.json")
+	return c.SendFile("data.json")
 }
 
 func addTodo(c *fiber.Ctx) error {
@@ -30,6 +30,7 @@ func updateList(c *fiber.Ctx) error {
 func deleteTodo(c *fiber.Ctx) error {
 	return c.JSON(todoListe)
 }
+
 func main() {
 	app := fiber.New()
 
