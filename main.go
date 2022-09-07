@@ -5,14 +5,17 @@ import (
 	"fmt"
 	"os"
 
+	"strconv"
+
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 )
 
 type list struct {
 	// uppercase sensitive
-	Id   string
-	Name string
-	Done bool
+	Id   string `json:"id"`
+	Name string `json:"name"`
+	Done bool   `json:"done"`
 }
 
 var todoListe = []list{}
@@ -24,51 +27,65 @@ func getList(c *fiber.Ctx) error {
 }
 
 func addTodo(c *fiber.Ctx) error {
-
+	fmt.Println("test")
 	newEntry := new(list)
 	err := c.BodyParser((newEntry))
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"status": "error", "message": "Review your input", "data": err})
 	}
 
-	//max := 0
+	lastId := 0
 	for i := 0; i < len(todoListe); i++ {
-		currId := todoListe[i]
-		fmt.Println(currId)
-		/*currId = strconv.Atoi(todoListe[i]["Id"])
-		if currId > max {
-			max = currId
-		}*/
+		currId, _ := strconv.Atoi(todoListe[i].Id)
+		if currId > lastId {
+			lastId = currId
+		}
 	}
 
+	newEntry.Id = strconv.Itoa(lastId + 1)
+	todoListe = append(todoListe, *newEntry)
 	return c.JSON(todoListe)
 }
 
-func updateList(c *fiber.Ctx) error {
+/*func updateList(c *fiber.Ctx) error {
 
-	var id = c.BodyParser("Id")
+todo := c.BodyParser(todoListe)
+
+for i := 0; i < len(todoListe); i++ {
+	if todo[i] == false {
+		todoListe[i].Done = "true"
+	}
+
+}*/
+
+/*id := c.Params("id")
+	body := list{}
+
+	if err := c.BodyParser(&body); err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	}
+
+	update := list{}
+
+	if newUpdate := c.todoListe.First(&update, id); update.Error != nil {
+		return fiber.NewError(fiber.StatusBadRequest, update.Error.Error())
+	}
+
+	return c.JSON(todoListe)
+}*/
+
+/*func deleteTodo(c *fiber.Ctx) error {
+
+	id := c.Params("id")
 
 	for i := 0; i < len(todoListe); i++ {
-		if todoListe[i]["Id"] == id {
-			todoListe[i]["Done"] = c.BodyParser()["Done"]
+		if todoListe[i].Id == id {
+			todoListe.Delete(&id)
 		}
 	}
 
 	return c.JSON(todoListe)
-}
-
-func deleteTodo(c *fiber.Ctx) error {
-
-	id := c.Params("Id")
-
-	for i := 0; i < len(todoListe); i++ {
-		if todoListe[i]["Id"] == id {
-
-		}
-	}
-
-	return c.JSON(todoListe)
-}
+}*/
 
 func loadCSV() {
 	var newList []list
@@ -96,10 +113,11 @@ func loadCSV() {
 func main() {
 	app := fiber.New()
 
+	app.Use(cors.New())
 	app.Get("/todos", getList)
 	app.Post("/todos", addTodo)
-	app.Put("/todos", updateList)
-	app.Delete("/todos/:id", deleteTodo)
+	//app.Put("/todos", updateList)
+	//app.Delete("/todos/:id", deleteTodo)
 
 	app.Listen(":5000")
 }
