@@ -4,12 +4,14 @@ import (
 	"encoding/csv"
 	"fmt"
 	"os"
-
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 )
+
+/*************************************************************************************************/
+// struct um Objekte zu erstellen
 
 type liste struct {
 	// uppercase sensitive
@@ -18,15 +20,22 @@ type liste struct {
 	Done bool   `json:"done"`
 }
 
+/*************************************************************************************************/
+// Array für die CSV-Liste
+
 var todoListe = []liste{}
 
-//var todoListe = make([]liste, 5)
+/*************************************************************************************************/
+// Ausgabe des Arrays
 
 func getList(c *fiber.Ctx) error {
 	loadCSV()
 
 	return c.JSON(todoListe)
 }
+
+/*************************************************************************************************/
+// Funktion zum hinzufügen eines Eintrags
 
 func addTodo(c *fiber.Ctx) error {
 
@@ -35,6 +44,7 @@ func addTodo(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"status": "error", "message": "Review your input", "data": err})
 	}
+
 	lastId := 0
 	for i := 0; i < len(todoListe); i++ {
 		currId, _ := strconv.Atoi(todoListe[i].Id)
@@ -42,6 +52,7 @@ func addTodo(c *fiber.Ctx) error {
 			lastId = currId
 		}
 	}
+
 	newEntry.Id = strconv.Itoa(lastId + 1)
 	todoListe = append(todoListe, *newEntry)
 
@@ -49,10 +60,23 @@ func addTodo(c *fiber.Ctx) error {
 	return c.JSON(todoListe)
 }
 
+/*************************************************************************************************/
+// Funktion zum Aktualisieren der Liste
+
 func updateList(c *fiber.Ctx) error {
 
 	id := c.Params("id")
-	// todo := c.BodyParser(todoListe)
+	err := c.BodyParser((todoListe))
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{"status": "error", "message": "Review your input", "data": err})
+	}
+
+	for i := 0; i < len(todoListe); i++ {
+		done := false
+		if todoListe[i][2] == "true" {
+			done = true
+		}
+	}
 
 	for _, update := range todoListe {
 		if update.Id == id {
@@ -60,22 +84,30 @@ func updateList(c *fiber.Ctx) error {
 			todoListe[id_int].Done = !todoListe[id_int].Done
 		}
 	}
+
 	writeCSV()
 	return c.JSON(todoListe)
 }
 
-func deleteTodo(c *fiber.Ctx) error {
+/*************************************************************************************************/
+// Funktion zum löschen von Einträgen
 
-	id := c.Params("id")
+// func deleteTodo(c *fiber.Ctx) error {
 
-	for i := 0; i < len(todoListe); i++ {
-		if todoListe[i].Id == id {
-			todoListe.Delete(&id)
-		}
-	}
-	writeCSV()
-	return c.JSON(todoListe)
-}
+// 	id := c.Params("id")
+
+// 	for i := 0; i < len(todoListe); i++ {
+// 		if todoListe[i].Id == id {
+// 			todoListwe.Delete(&id)
+// 		}
+// 	}
+
+// 	writeCSV()
+// 	return c.JSON(todoListe)
+// }
+
+/*************************************************************************************************/
+// Funktion zum laden der CSV-Daten
 
 func loadCSV() {
 	var newList []liste
@@ -97,8 +129,12 @@ func loadCSV() {
 		readList := liste{Id: record[i][0], Name: record[i][1], Done: done}
 		newList = append(newList, readList)
 	}
+
 	todoListe = newList
 }
+
+/*************************************************************************************************/
+// Funktion zum schreiben in die CSV
 
 func writeCSV() {
 
@@ -115,9 +151,12 @@ func writeCSV() {
 		todo := []string{record.Id, record.Name, fmt.Sprint(record.Done)}
 		_ = writer.Write(todo)
 	}
+
 	writer.Flush()
 	file.Close()
 }
+
+/*************************************************************************************************/
 
 func main() {
 	app := fiber.New()
