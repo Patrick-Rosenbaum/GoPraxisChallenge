@@ -71,13 +71,6 @@ func updateList(c *fiber.Ctx) error {
 		return c.Status(500).JSON(fiber.Map{"status": "error", "message": "Review your input", "data": err})
 	}
 
-	for i := 0; i < len(todoListe); i++ {
-		done := false
-		if todoListe[i][2] == "true" {
-			done = true
-		}
-	}
-
 	for _, update := range todoListe {
 		if update.Id == id {
 			id_int, _ := strconv.Atoi(id)
@@ -90,21 +83,27 @@ func updateList(c *fiber.Ctx) error {
 }
 
 /*************************************************************************************************/
+// Funktion die ein slice zurück gibt
+func Slice(s []liste, index int) []liste {
+	return append(s[:index], s[index+1:]...)
+}
+
+/*************************************************************************************************/
 // Funktion zum löschen von Einträgen
 
-// func deleteTodo(c *fiber.Ctx) error {
+func deleteTodo(c *fiber.Ctx) error {
 
-// 	id := c.Params("id")
+	id := c.Params("id")
 
-// 	for i := 0; i < len(todoListe); i++ {
-// 		if todoListe[i].Id == id {
-// 			todoListwe.Delete(&id)
-// 		}
-// 	}
+	for delete, todo := range todoListe {
+		if todo.Id == id {
+			todoListe = Slice(todoListe, delete) // hier wird der slice verwendet um den index durchzugehen
+		}
+	}
 
-// 	writeCSV()
-// 	return c.JSON(todoListe)
-// }
+	writeCSV()
+	return c.JSON(todoListe)
+}
 
 /*************************************************************************************************/
 // Funktion zum laden der CSV-Daten
@@ -165,7 +164,7 @@ func main() {
 	app.Get("/todos", getList)
 	app.Post("/todos", addTodo)
 	app.Put("/todos/", updateList)
-	//app.Delete("/todos/:id", deleteTodo)
+	app.Delete("/todos/:id", deleteTodo)
 
 	app.Listen(":5000")
 }
