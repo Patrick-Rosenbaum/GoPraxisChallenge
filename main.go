@@ -65,16 +65,15 @@ func addTodo(c *fiber.Ctx) error {
 
 func updateList(c *fiber.Ctx) error {
 
-	id := c.Params("id")
-	err := c.BodyParser((todoListe))
+	oldEntry := new(liste)
+	err := c.BodyParser((oldEntry))
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"status": "error", "message": "Review your input", "data": err})
 	}
 
-	for _, update := range todoListe {
-		if update.Id == id {
-			id_int, _ := strconv.Atoi(id)
-			todoListe[id_int].Done = !todoListe[id_int].Done
+	for i, item := range todoListe {
+		if item.Id == oldEntry.Id {
+			todoListe[i].Done = oldEntry.Done
 		}
 	}
 
