@@ -14,6 +14,6 @@ Vorrausetzungen um das Backend nutzen zu können sind:
 
 Sofern man Golang und Git dann installiert hat legt man sich ein Verzeichnis an in dem man das Repository herunterladen möchte mit
 
-![image](https://user-images.githubusercontent.com/109273337/189082741-428e7e17-c3ef-4126-b94d-58a8434bcf50.png)
+`git clone https://github.com/Patrick-Rosenbaum/GoPraxisChallenge.git`
 
 Nachdem man sich die Repo hat kann man mit `go run main.go` das Backend starten.
