@@ -147,7 +147,7 @@ func writeCSV() {
 	writer.Write(header)
 
 	for _, record := range todoListe {
-		todo := []string{record.Id, record.Name, fmt.Sprint(record.Done)}
+		todo := []string{record.Id, record.Name, fmt.Sprintf("%t", record.Done)}
 		_ = writer.Write(todo)
 	}
 
