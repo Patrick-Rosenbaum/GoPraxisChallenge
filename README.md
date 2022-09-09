@@ -2,7 +2,7 @@
 
 Willkommen zu meinem missratenen Backend Projekt.
 
-Ich verwende VS-Code als Texteditor, Git-Bash als Terminal und Github als Repository
+Ich verwende VS-Code als Texteditor, Git-Bash als Terminal und Github als Repository.
 
 ## Setup
 Vorrausetzungen um das Backend nutzen zu können sind:
@@ -16,4 +16,10 @@ Sofern man Golang und Git dann installiert hat legt man sich ein Verzeichnis an 
 
 `git clone https://github.com/Patrick-Rosenbaum/GoPraxisChallenge.git`
 
-Nachdem man sich die Repo hat kann man mit `go run main.go` das Backend starten.
+Nachdem man sich die Repo hat muss man sich mit `go get -u github.com/gofiber/fiber/v2` die benötigen Packages und Dependencies herunterladen und installieren.
+
+Danach kann man mit `go run main.go` das Backend starten.
+
+### Frontend
+
+Ich habe mein Frontend in einem Seperaten Verzeichnis mit beigefügt, mit CSS und JS, um es ausprobieren zu können oder man setzt die Url um.
