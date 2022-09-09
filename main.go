@@ -11,7 +11,7 @@ import (
 )
 
 /*************************************************************************************************/
-// struct um Objekte zu erstellen
+// struct for Objects
 type liste struct {
 	// uppercase sensitive
 	Id   string `json:"id"`
@@ -20,11 +20,11 @@ type liste struct {
 }
 
 /*************************************************************************************************/
-// Array für die CSV-Liste
+// array for the CSV Data
 var todoListe = []liste{}
 
 /*************************************************************************************************/
-// Ausgabe des Arrays
+// returns the Array
 func getList(c *fiber.Ctx) error {
 	loadCSV()
 
@@ -32,7 +32,7 @@ func getList(c *fiber.Ctx) error {
 }
 
 /*************************************************************************************************/
-// Funktion zum hinzufügen eines Eintrags
+// function to add new todos
 func addTodo(c *fiber.Ctx) error {
 
 	newEntry := new(liste)
@@ -57,7 +57,7 @@ func addTodo(c *fiber.Ctx) error {
 }
 
 /*************************************************************************************************/
-// Funktion zum Aktualisieren der Liste
+// function to update the list
 func updateList(c *fiber.Ctx) error {
 
 	oldEntry := new(liste)
@@ -77,18 +77,18 @@ func updateList(c *fiber.Ctx) error {
 }
 
 /*************************************************************************************************/
-// Funktion die ein slice zurück gibt
+// function for a slice
 func Slice(s []liste, index int) []liste {
 	return append(s[:index], s[index+1:]...)
 }
 
 /*************************************************************************************************/
-// Funktion zum löschen von Einträgen
+// function to delete a todo
 func deleteTodo(c *fiber.Ctx) error {
 
 	id := c.Params("id")
 
-	// Hier wird die Slice-Funktion aufgerufen um das gewählte Element zu entfernen
+	// the slice func is used here to delete the todo
 	for delete, todo := range todoListe {
 		if todo.Id == id {
 			todoListe = Slice(todoListe, delete)
@@ -100,7 +100,7 @@ func deleteTodo(c *fiber.Ctx) error {
 }
 
 /*************************************************************************************************/
-// Funktion zum laden der CSV-Datei
+// function to load the CSV data
 func loadCSV() {
 	var newList []liste
 
@@ -126,7 +126,7 @@ func loadCSV() {
 }
 
 /*************************************************************************************************/
-// Funktion zum abspeichern von Einträgen
+// function to write into the CSV data
 func writeCSV() {
 
 	file, err := os.Create("data.csv")
