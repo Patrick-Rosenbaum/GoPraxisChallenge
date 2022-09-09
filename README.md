@@ -8,7 +8,6 @@ Ich verwende VS-Code als Texteditor, Git-Bash als Terminal und Github als Reposi
 Vorrausetzungen um das Backend nutzen zu können sind:
 
 ![image](https://user-images.githubusercontent.com/109273337/189079461-fe440a63-f400-4294-a151-3677d5c2854b.png)
-
 ![image](https://user-images.githubusercontent.com/109273337/189079756-e30125c3-b033-4868-a910-a34a7862a675.png)
 ----------------------------------------------------------------------------------------------------------------
 
