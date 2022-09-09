@@ -12,7 +12,6 @@ import (
 
 /*************************************************************************************************/
 // struct um Objekte zu erstellen
-
 type liste struct {
 	// uppercase sensitive
 	Id   string `json:"id"`
@@ -22,12 +21,10 @@ type liste struct {
 
 /*************************************************************************************************/
 // Array für die CSV-Liste
-
 var todoListe = []liste{}
 
 /*************************************************************************************************/
 // Ausgabe des Arrays
-
 func getList(c *fiber.Ctx) error {
 	loadCSV()
 
@@ -36,7 +33,6 @@ func getList(c *fiber.Ctx) error {
 
 /*************************************************************************************************/
 // Funktion zum hinzufügen eines Eintrags
-
 func addTodo(c *fiber.Ctx) error {
 
 	newEntry := new(liste)
@@ -62,7 +58,6 @@ func addTodo(c *fiber.Ctx) error {
 
 /*************************************************************************************************/
 // Funktion zum Aktualisieren der Liste
-
 func updateList(c *fiber.Ctx) error {
 
 	oldEntry := new(liste)
@@ -89,7 +84,6 @@ func Slice(s []liste, index int) []liste {
 
 /*************************************************************************************************/
 // Funktion zum löschen von Einträgen
-
 func deleteTodo(c *fiber.Ctx) error {
 
 	id := c.Params("id")
@@ -106,7 +100,6 @@ func deleteTodo(c *fiber.Ctx) error {
 
 /*************************************************************************************************/
 // Funktion zum laden der CSV-Daten
-
 func loadCSV() {
 	var newList []liste
 
@@ -133,7 +126,6 @@ func loadCSV() {
 
 /*************************************************************************************************/
 // Funktion zum schreiben in die CSV
-
 func writeCSV() {
 
 	file, err := os.Create("data.csv")
@@ -155,7 +147,6 @@ func writeCSV() {
 }
 
 /*************************************************************************************************/
-
 func main() {
 	app := fiber.New()
 
